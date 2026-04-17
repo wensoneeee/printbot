@@ -55,30 +55,31 @@
     <button id="sendData">Готово</button>
 
     <script>
-        const tg = window.Telegram.WebApp;
-        
-        // Показываем кнопку только если мы в ТГ
-        if (tg.initData) {
-            tg.expand();
-            tg.MainButton.setText("ОТПРАВИТЬ").show();
-        }
+    const tg = window.Telegram.WebApp;
+    tg.expand();
 
-        document.getElementById('sendData').addEventListener('click', () => {
-            const data = {
-                color: document.getElementById('color').value,
-                sides: document.getElementById('sides').value
-            };
-            tg.sendData(json.stringify(data));
+    // Настраиваем главную кнопку Telegram (внизу экрана)
+    tg.MainButton.setText("ПОДТВЕРДИТЬ ПЕЧАТЬ").show();
+
+    // Функция сбора данных
+    function getSettings() {
+        return JSON.stringify({
+            color: document.getElementById('color').value,
+            sides: document.getElementById('sides').value
         });
-        
-        // Для ТГ кнопок внизу экрана
-        tg.onEvent('mainButtonClicked', function(){
-            const data = {
-                color: document.getElementById('color').value,
-                sides: document.getElementById('sides').value
-            };
-            tg.sendData(JSON.stringify(data));
-        });
-    </script>
+    }
+
+    // Обработка нажатия на встроенную кнопку "Готово"
+    document.getElementById('sendData').addEventListener('click', () => {
+        const data = getSettings();
+        tg.sendData(data); // Отправляет данные боту
+    });
+
+    // Обработка нажатия на кнопку самого Telegram (MainButton)
+    tg.onEvent('mainButtonClicked', function(){
+        const data = getSettings();
+        tg.sendData(data);
+    });
+</script>
 </body>
 </html>
