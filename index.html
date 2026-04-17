@@ -6,43 +6,77 @@
     <title>Настройка печати</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        body { font-family: sans-serif; background-color: var(--tg-theme-bg-color); color: var(--tg-theme-text-color); padding: 20px; }
-        .section { margin-bottom: 20px; border: 1px solid #ccc; padding: 10px; border-radius: 10px; }
-        button { width: 100%; padding: 15px; background: var(--tg-theme-button-color); color: var(--tg-theme-button-text-color); border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
-        select { width: 100%; padding: 10px; margin-top: 5px; border-radius: 5px; }
+        /* Добавим яркие цвета, чтобы сразу понять, что сайт загрузился */
+        body { 
+            font-family: sans-serif; 
+            background-color: #f0f0f0; /* Светло-серый фон для теста */
+            padding: 20px; 
+            text-align: center;
+        }
+        .section { 
+            background: white;
+            margin-bottom: 15px; 
+            padding: 15px; 
+            border-radius: 12px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        button { 
+            width: 100%; 
+            padding: 15px; 
+            background: #0088cc; 
+            color: white; 
+            border: none; 
+            border-radius: 10px; 
+            font-size: 16px;
+            font-weight: bold;
+        }
+        select { width: 100%; padding: 10px; font-size: 16px; }
     </style>
 </head>
 <body>
-    <h2>🖨 Настройка печати</h2>
+    <h3>🖨 Настройки печати</h3>
     
     <div class="section">
-        <label>Цветность:</label>
+        <label>Цветность:</label><br><br>
         <select id="color">
-            <option value="bw">Чёрно-белая (5₽)</option>
-            <option value="color">Цветная (25₽)</option>
+            <option value="bw">⚫️ ЧБ (5₽)</option>
+            <option value="color">🌈 Цвет (25₽)</option>
         </select>
     </div>
 
     <div class="section">
-        <label>Стороны:</label>
+        <label>Стороны:</label><br><br>
         <select id="sides">
-            <option value="1">Односторонняя</option>
-            <option value="2">Двусторонняя</option>
+            <option value="1">📄 Одна сторона</option>
+            <option value="2">📖 Две стороны</option>
         </select>
     </div>
 
-    <button id="sendData">🔥 Отправить на печать</button>
+    <button id="sendData">Готово</button>
 
     <script>
         const tg = window.Telegram.WebApp;
-        tg.expand(); // Расширить на весь экран
+        
+        // Показываем кнопку только если мы в ТГ
+        if (tg.initData) {
+            tg.expand();
+            tg.MainButton.setText("ОТПРАВИТЬ").show();
+        }
 
         document.getElementById('sendData').addEventListener('click', () => {
             const data = {
                 color: document.getElementById('color').value,
                 sides: document.getElementById('sides').value
             };
-            // Отправляем данные боту и закрываем окно
+            tg.sendData(json.stringify(data));
+        });
+        
+        // Для ТГ кнопок внизу экрана
+        tg.onEvent('mainButtonClicked', function(){
+            const data = {
+                color: document.getElementById('color').value,
+                sides: document.getElementById('sides').value
+            };
             tg.sendData(JSON.stringify(data));
         });
     </script>
