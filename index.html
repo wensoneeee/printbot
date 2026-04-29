@@ -3,260 +3,205 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Настройка печати</title>
+    <title>Принт Сервис</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        /* Единые CSS классы для всех страниц */
         :root {
-            --primary-color: #ff8c00;
-            --secondary-color: #ff5722;
-            --bg-gradient: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            --text-color: #333;
+            --primary-gradient: linear-gradient(135deg, #ff8c00, #ff5722);
+            --bg-color: #f4f4f4;
             --card-bg: #ffffff;
-            --border-radius: 12px; /* Аккуратные скругления, без круглых форм */
+            --text-main: #222222;
+            --rect-radius: 4px; /* Строгие прямоугольные формы */
         }
 
         body {
-            font-family: sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             margin: 0;
-            padding: 0;
-            background: var(--bg-gradient);
-            color: var(--text-color);
+            background-color: var(--bg-color);
+            background: var(--primary-gradient);
+            color: var(--text-main);
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
         }
 
-        .screen {
-            display: none;
+        .container {
             padding: 20px;
-            flex: 1;
+            max-width: 500px;
+            margin: 0 auto;
         }
 
-        .screen.active {
-            display: block;
-        }
+        .screen { display: none; }
+        .active { display: block; }
 
         .header {
             text-align: center;
             color: white;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
         }
 
         .card {
             background: var(--card-bg);
-            border-radius: var(--border-radius);
             padding: 20px;
-            margin-bottom: 15px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            border-radius: var(--rect-radius);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
         }
 
-        .btn {
+        /* Кнопки теперь прямоугольные */
+        .btn-main {
+            width: 100%;
+            padding: 18px;
+            margin-bottom: 12px;
+            border: 2px solid #eee;
+            background: white;
+            border-radius: var(--rect-radius);
+            font-size: 16px;
+            font-weight: 700;
+            text-align: left;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .btn-main:active { background: #f9f9f9; border-color: #ff8c00; }
+
+        .btn-action {
             width: 100%;
             padding: 15px;
-            margin-bottom: 10px;
+            background: #222;
+            color: white;
             border: none;
-            border-radius: var(--border-radius);
-            font-size: 16px;
+            border-radius: var(--rect-radius);
             font-weight: bold;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: #f0f0f0;
-            color: #333;
-            transition: background 0.2s;
-        }
-
-        .btn:active {
-            background: #e0e0e0;
-        }
-
-        .btn--info {
-            background: transparent;
-            width: auto;
-            padding: 5px 10px;
-            font-size: 20px;
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 10px;
-            font-size: 16px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            box-sizing: border-box;
-        }
-
-        .preview-container {
-            width: 100%;
-            height: 200px;
-            background: #eee;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
             margin-top: 10px;
         }
 
-        .preview-image {
-            max-width: 100%;
-            max-height: 100%;
-            display: none;
+        .btn-support {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 1px solid white;
+            padding: 10px;
+            width: 100%;
+            border-radius: var(--rect-radius);
+            font-weight: bold;
+            margin-top: 40px;
         }
 
-        /* Выпадающая информация */
-        .info-block {
-            display: none;
-            background: #e3f2fd;
-            padding: 10px;
-            border-radius: 8px;
-            margin-bottom: 10px;
-            font-size: 14px;
+        .filter-preview {
+            width: 100%;
+            height: 120px;
+            background: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=300&q=80');
+            background-size: cover;
+            background-position: center;
+            margin-bottom: 15px;
+            border-radius: var(--rect-radius);
+            transition: filter 0.3s;
         }
+
+        /* CSS Фильтры */
+        .f-none { filter: none; }
+        .f-bw { filter: grayscale(100%); }
+        .f-sepia { filter: sepia(100%); }
+        .f-bright { filter: brightness(130%) contrast(110%); }
+
+        label { display: block; margin-bottom: 8px; font-weight: bold; font-size: 14px; }
+        select {
+            width: 100%;
+            padding: 12px;
+            border-radius: var(--rect-radius);
+            border: 1px solid #ccc;
+            margin-bottom: 20px;
+            font-size: 16px;
+        }
+
+        .info-text { font-size: 13px; color: #666; margin-top: -10px; margin-bottom: 15px; }
     </style>
 </head>
 <body>
-    <div id="screen-home" class="screen active">
-        <div class="header">
-            <h2>🖨 Принт Сервис</h2>
-            <p>Выберите тип печати</p>
-        </div>
+    <div class="container">
         
-        <div class="card">
-            <button class="btn" onclick="openScreen('screen-photo')">
-                📸 Фотопечать
-                <span class="btn--info" onclick="event.stopPropagation(); toggleInfo('info-photo')">ℹ️</span>
-            </button>
-            <div id="info-photo" class="info-block">
-                Печать фотографий. Доступны фильтры, загрузка и предпросмотр изображения.
+        <div id="home" class="screen active">
+            <div class="header">
+                <h1>🖨 Печать</h1>
+                <p>Выберите нужный формат</p>
             </div>
+            <div class="card">
+                <button class="btn-main" onclick="showScreen('photo-settings')">
+                    📸 Фотопечать <span>→</span>
+                </button>
+                <div class="info-text">Глянцевая бумага, разные фильтры</div>
 
-            <button class="btn" onclick="openScreen('screen-bw')">
-                📄 Ч/Б Печать
-                <span class="btn--info" onclick="event.stopPropagation(); toggleInfo('info-bw')">ℹ️</span>
-            </button>
-            <div id="info-bw" class="info-block">
-                Черно-белая печать документов. Настройка количества сторон.
+                <button class="btn-main" onclick="showScreen('bw-settings')">
+                    📄 Ч/Б Документы <span>→</span>
+                </button>
+                <div class="info-text">Обычный А4, быстрая печать</div>
             </div>
+            <button class="btn-support" onclick="contactSupport()">🆘 ПОДДЕРЖКА</button>
         </div>
-    </div>
 
-    <div id="screen-photo" class="screen">
-        <div class="header">
-            <h2>📸 Фотопечать</h2>
-            <p>Настройки изображения</p>
-        </div>
-        <div class="card">
-            <div class="form-group">
-                <label>Фото для предпросмотра:</label>
-                <input type="file" class="form-control" accept="image/*" id="photo-input">
-            </div>
-            <div class="preview-container">
-                <span id="photo-placeholder">Предпросмотр</span>
-                <img id="photo-preview" class="preview-image" src="" alt="Preview">
-            </div>
-            <div class="form-group" style="margin-top: 15px;">
-                <label>Формат / Фильтр:</label>
-                <select id="photo-filter" class="form-control">
+        <div id="photo-settings" class="screen">
+            <div class="header"><h2>Настройки фото</h2></div>
+            <div class="card">
+                <label>Пример фильтра:</label>
+                <div id="preview-box" class="filter-preview f-none"></div>
+                
+                <label>Выберите фильтр:</label>
+                <select id="photo-filter" onchange="applyFilterPreview()">
                     <option value="none">Оригинал</option>
-                    <option value="bw">Черно-белое</option>
-                    <option value="crop">С обрезкой по краям</option>
-                    <option value="fit">С белыми полями</option>
+                    <option value="bw">Черно-белый (Классика)</option>
+                    <option value="sepia">Сепия (Ретро)</option>
+                    <option value="bright">Яркий (Насыщенный)</option>
                 </select>
-            </div>
-            <button class="btn" style="justify-content: center; background: #4CAF50; color: white;" onclick="savePhotoSettings()">Далее</button>
-            <button class="btn" style="justify-content: center; background: #ddd;" onclick="openScreen('screen-home')">Назад</button>
-        </div>
-    </div>
 
-    <div id="screen-bw" class="screen">
-        <div class="header">
-            <h2>📄 Ч/Б Печать</h2>
-            <p>Настройки документа</p>
-        </div>
-        <div class="card">
-            <div class="form-group">
-                <label>Стороны:</label>
-                <select id="bw-sides" class="form-control">
-                    <option value="1">📄 Одна сторона</option>
-                    <option value="2">📖 Две стороны</option>
-                </select>
+                <button class="btn-action" onclick="finish('photo')">ГОТОВО</button>
+                <button class="btn-main" style="border:none; text-align:center; justify-content:center;" onclick="showScreen('home')">Назад</button>
             </div>
-            <button class="btn" style="justify-content: center; background: #4CAF50; color: white;" onclick="saveBwSettings()">Далее</button>
-            <button class="btn" style="justify-content: center; background: #ddd;" onclick="openScreen('screen-home')">Назад</button>
         </div>
+
+        <div id="bw-settings" class="screen">
+            <div class="header"><h2>Настройки Ч/Б</h2></div>
+            <div class="card">
+                <label>Количество сторон:</label>
+                <select id="bw-sides">
+                    <option value="1">📄 Одна сторона</option>
+                    <option value="2">📖 Две стороны (Эконом)</option>
+                </select>
+
+                <button class="btn-action" onclick="finish('bw')">ГОТОВО</button>
+                <button class="btn-main" style="border:none; text-align:center; justify-content:center;" onclick="showScreen('home')">Назад</button>
+            </div>
+        </div>
+
     </div>
 
     <script>
-        const tg = window.Telegram.WebApp;
+        let tg = window.Telegram.WebApp;
         tg.expand();
 
-        let finalSettings = {};
-
-        // Переключение общих классов (экранов)
-        function openScreen(screenId) {
+        function showScreen(id) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.getElementById(screenId).classList.add('active');
-            tg.MainButton.hide();
+            document.getElementById(id).classList.add('active');
         }
 
-        // Показ информации по кнопкам "i"
-        function toggleInfo(infoId) {
-            const el = document.getElementById(infoId);
-            el.style.display = el.style.display === 'block' ? 'none' : 'block';
+        function applyFilterPreview() {
+            const filter = document.getElementById('photo-filter').value;
+            const preview = document.getElementById('preview-box');
+            preview.className = 'filter-preview f-' + filter;
         }
 
-        // Локальный предпросмотр загруженного фото
-        document.getElementById('photo-input').addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    document.getElementById('photo-preview').src = e.target.result;
-                    document.getElementById('photo-preview').style.display = 'block';
-                    document.getElementById('photo-placeholder').style.display = 'none';
-                }
-                reader.readAsDataURL(file);
+        function contactSupport() {
+            tg.sendData(JSON.stringify({action: 'support'}));
+        }
+
+        function finish(type) {
+            let data = { type: type };
+            if(type === 'photo') {
+                data.filter = document.getElementById('photo-filter').value;
+            } else {
+                data.sides = document.getElementById('bw-sides').value;
             }
-        });
-
-        function savePhotoSettings() {
-            finalSettings = {
-                type: 'photo',
-                filter: document.getElementById('photo-filter').value
-            };
-            showMainButton();
+            tg.sendData(JSON.stringify(data));
         }
-
-        function saveBwSettings() {
-            finalSettings = {
-                type: 'bw',
-                sides: document.getElementById('bw-sides').value,
-                color: 'bw'
-            };
-            showMainButton();
-        }
-
-        function showMainButton() {
-            tg.MainButton.setText("ПОДТВЕРДИТЬ НАСТРОЙКИ").show();
-        }
-
-        tg.onEvent('mainButtonClicked', function() {
-            // Отправляем выбранные параметры обратно в бота
-            tg.sendData(JSON.stringify(finalSettings));
-        });
     </script>
 </body>
 </html>
